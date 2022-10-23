@@ -1,0 +1,165 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+```
+
+
+```{r}
+df<- read.csv("C:/Users/srush/Downloads/shots_data.csv")
+```
+
+```{r}
+shotsA <- df %>% filter(team == "Team A") #teamA is a dataframe of team A's shots
+shotsB <- df %>% filter(team == "Team B") #teamB is a dataframe of team B's shots
+```
+
+
+```{r}
+#TEAM A
+#Two Points Zone
+#filter two point shots from team A's total shots
+shots_2PTA <- shotsA %>%
+  filter((x <= 22 & y<= 7.8)  & (x >= -22 & y <= 7.8) | ((x <= 23.75 & y > 7.8) & (x>= -23.75 & y > 7.8))) 
+
+```
+
+
+```{r}
+#Percentage of total 2pt shots divided by the total shots played
+TwoPTA <- nrow(shots_2PTA)/nrow(shotsA)*100
+
+# Percentage of the effective field goal percentage of team A shots within a  2PT zone
+TwoPTAeFG <-sum(shots_2PTA$fgmade) /nrow(shots_2PTA) * 100
+```
+
+
+```{r}
+#Non Corner 3
+#filter Non Corner 3 shots from team A's total shots
+shots_NC3A <- shotsA %>%
+  filter((x >= 23.75 & y > 7.8) | (x<= -23.75 & y > 7.8))
+nrow(shots_NC3A)
+
+```
+```{r}
+#Percentage of total  Non Corner 3 shots divided by the total shots played by Teaam A
+NC3A <-nrow(shots_NC3A)/nrow(shotsA)*100
+
+
+# Percentage of the effective field goal percentage of team A shots within a Non Corner 3 zone
+NC3AeFG <- sum(shots_NC3A$fgmade)
+```
+
+
+```{r}
+#Corner 3
+##filter Corner 3 shots from team A's total shots
+
+shots_C3A <- shotsA %>%
+  filter((x >= 22 & y <= 7.8) | (x <= -22 & y <= 7.8))
+nrow(shots_C3A)
+```
+```{r}
+#Percentage of total Corner 3 shots divided by the total shots played by Teaam A
+C3A <- nrow(shots_C3A)/nrow(shotsA)*100
+
+
+# Percentage of the effective field goal percentage of team A shots within a Corner 3 zone
+#must adjust the equation for 3Cs by multiplying the threes made by 0.5
+C3AeFG <- (sum(shots_C3A$fgmade)+sum(shots_C3A$fgmade)*0.5)/nrow(shots_C3A) * 100
+```
+
+```{r}
+#install.packages("formattable")
+library(formattable)
+
+```
+
+```{r}
+SummaryA <- data.frame(
+                       Shot_Zones = c("2PT", "NC3", "C3"),
+                       Shot_Distribution = c(round(TwoPTA,3), round(NC3A,3), round(C3A,3)),
+                      eFG_percent= c(round(TwoPTAeFG,3), round(NC3AeFG,3), round(C3AeFG,3)))
+
+formattable(SummaryA)
+
+```
+
+```{r}
+#TEAM B
+#Two Points Zone
+#filter two point shots from team A's total shots
+shots_2PTB <- shotsB %>%
+  filter((x <= 22 & y<= 7.8)  & (x >= -22 & y <= 7.8) | ((x <= 23.75 & y > 7.8) & (x>= -23.75 & y > 7.8))) 
+
+```
+
+
+```{r}
+#Percentage of total 2pt shots divided by the total shots played
+TwoPTB <- nrow(shots_2PTB)/nrow(shotsB)*100
+
+# Percentage of the effective field goal percentage of team B shots within a  2PT zone
+TwoPTBeFG <-sum(shots_2PTB$fgmade) /nrow(shots_2PTB) * 100
+```
+
+
+```{r}
+#Non Corner 3
+#filter Non Corner 3 shots from team B's total shots
+shots_NC3B <- shotsB %>%
+  filter((x >= 23.75 & y > 7.8) | (x<= -23.75 & y > 7.8))
+nrow(shots_NC3B)
+
+```
+
+
+```{r}
+#Percentage of total  Non Corner 3 shots divided by the total shots played by Teaam B
+NC3B <-nrow(shots_NC3B)/nrow(shotsB)*100
+
+
+# Percentage of the effective field goal percentage of team B shots within a Non Corner 3 zone
+NC3BeFG <- sum(shots_NC3B$fgmade)
+```
+
+
+```{r}
+#Corner 3
+##filter Corner 3 shots from team B's total shots
+
+shots_C3B <- shotsB %>%
+  filter((x >= 22 & y <= 7.8) | (x <= -22 & y <= 7.8))
+nrow(shots_C3B)
+```
+```{r}
+#Percentage of total Corner 3 shots divided by the total shots played by Teaam B
+C3B <- nrow(shots_C3B)/nrow(shotsB)*100
+
+
+# Percentage of the effective field goal percentage of team B shots within a Corner 3 zone
+#must adjust the equation for 3Cs by multiplying the threes made by 0.5
+C3BeFG <- (sum(shots_C3B$fgmade)+sum(shots_C3B$fgmade)*0.5)/nrow(shots_C3B) * 100
+```
+
+
+```{r}
+SummaryB <- data.frame(
+                       Shot_Zones = c("2PT", "NC3", "C3"),
+                       Shot_Distribution = c(round(TwoPTB,3), round(NC3B,3), round(C3B,3)),
+                      eFG_percent= c(round(TwoPTBeFG,3), round(NC3BeFG,3), round(C3BeFG,3)))
+
+formattable(SummaryB)
+
+```
